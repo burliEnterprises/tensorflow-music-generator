@@ -18,7 +18,7 @@ Original code comes from YouTube, see here: (https://youtu.be/ZE7qWXX05T0)
   
 Use [pip](https://pypi.python.org/pypi/pip) to install any missing dependencies (pip install --upgrade ... ) 
 
-### Dependencies on Win with python3
+### Dependencies on Windows with python3
 ```
     pip3 install pandas
     pip3 install msgpack-python
