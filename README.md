@@ -1,5 +1,6 @@
 # tensorflow-music-generator
 generates music (midi files) using a Tensorflow RNN
+Read more about it on  Medium: https://medium.com/@m_ko/deep-learning-with-tensorflow-part-3-music-and-text-generation-370cf37bb071
 
 
 ## Overview
