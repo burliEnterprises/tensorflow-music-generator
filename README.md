@@ -2,6 +2,9 @@
 generates music (midi files) using a Tensorflow RNN
 Read more about it on  Medium: https://medium.com/@m_ko/deep-learning-with-tensorflow-part-3-music-and-text-generation-370cf37bb071
 
+Hear a demo of the result here:
+https://www.youtube.com/watch?v=5wZIQ9XHNns&feature=youtu.be
+
 
 ## Overview
 Use TensorFlow to generate short sequences of music with a [Restricted Boltzmann Machine](http://deeplearning4j.org/restrictedboltzmannmachine.html). 
