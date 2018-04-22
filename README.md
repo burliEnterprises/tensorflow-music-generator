@@ -32,7 +32,7 @@ Use [pip](https://pypi.python.org/pypi/pip) to install any missing dependencies 
     pip3 install numpy
     pip3 install glob2
     pip3 install tqdm
-    pip3 install py-midi
+    pip3 install git+https://github.com/vishnubob/python-midi@feature/python3
 ```
 
 ## Basic Usage
