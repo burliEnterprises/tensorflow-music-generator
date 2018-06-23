@@ -38,7 +38,7 @@ Use [pip](https://pypi.python.org/pypi/pip) to install any missing dependencies 
 ## Basic Usage
 To train the model and create music, simply clone this directory and run
 ```
-python rbm_chords.py
+python3 rbm_chords.py
 ```
 
 The training data goes in the pop_music_midi folder. You have to use MIDI files. You can find some [here](http://www.midiworld.com/files/).
