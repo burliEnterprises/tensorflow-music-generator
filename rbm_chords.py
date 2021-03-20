@@ -8,7 +8,7 @@ import glob
 import tensorflow as tf
 from tensorflow.python.ops import control_flow_ops
 from tqdm import tqdm
-
+tf.compat.v1.disable_eager_execution()
 ###################################################
 # In order for this code to work, you need to place this file in the same 
 # directory as the midi_manipulation.py file and the Pop_Music_Midi directory
@@ -48,17 +48,17 @@ num_timesteps = 15  # This is the number of timesteps that we will create at a t
 n_visible = 2 * note_range * num_timesteps  # This is the size of the visible layer.
 n_hidden = 50  # This is the size of the hidden layer
 
-num_epochs = 200  # The number of training epochs that we are going to run.
+num_epochs = 10000  # The number of training epochs that we are going to run.
 # For each epoch we go through the entire data set.
-batch_size = 100  # The number of training examples that we are going to send through the RBM at a time.
+batch_size = 70  # The number of training examples that we are going to send through the RBM at a time.
 lr = tf.constant(0.005, tf.float32)  # The learning rate of our model
 
 # Variables:
 # Next, let's look at the variables we're going to use:
 # The placeholder variable that holds our data
-x = tf.placeholder(tf.float32, [None, n_visible], name="x")
+x = tf.compat.v1.placeholder(tf.float32, [None, n_visible], name="x")
 # The weight matrix that stores the edge weights
-W = tf.Variable(tf.random_normal([n_visible, n_hidden], 0.01), name="W")
+W = tf.Variable(tf.random.normal([n_visible, n_hidden], 0.01), name="W")
 # The bias vector for the hidden layer
 bh = tf.Variable(tf.zeros([1, n_hidden], tf.float32, name="bh"))
 # The bias vector for the visible layer
@@ -69,7 +69,7 @@ bv = tf.Variable(tf.zeros([1, n_visible], tf.float32, name="bv"))
 # This function lets us easily sample from a vector of probabilities
 def sample(probs):
     # Takes in a vector of probabilities, and returns a random vector of 0s and 1s sampled from the input vector
-    return tf.floor(probs + tf.random_uniform(tf.shape(probs), 0, 1))
+    return tf.floor(probs + tf.random.uniform(tf.shape(input=probs), 0, 1))
 
 
 # This function runs the gibbs chain. We will call this function in two places:
@@ -81,7 +81,7 @@ def gibbs_sample(k):
         # Runs a single gibbs step. The visible values are initialized to xk
         hk = sample(tf.sigmoid(tf.matmul(xk, W) + bh))  # Propagate the visible values to sample the hidden values
         xk = sample(
-            tf.sigmoid(tf.matmul(hk, tf.transpose(W)) + bv))  # Propagate the hidden values to sample the visible values
+            tf.sigmoid(tf.matmul(hk, tf.transpose(a=W)) + bv))  # Propagate the hidden values to sample the visible values
         return count + 1, k, xk
 
     # Run gibbs steps for k iterations
@@ -107,21 +107,21 @@ h_sample = sample(tf.sigmoid(tf.matmul(x_sample, W) + bh))
 
 # Next, we update the values of W, bh, and bv,
 # based on the difference between the samples that we drew and the original values
-size_bt = tf.cast(tf.shape(x)[0], tf.float32)
+size_bt = tf.cast(tf.shape(input=x)[0], tf.float32)
 W_adder = tf.multiply(lr / size_bt,
-                      tf.subtract(tf.matmul(tf.transpose(x), h), tf.matmul(tf.transpose(x_sample), h_sample)))
-bv_adder = tf.multiply(lr / size_bt, tf.reduce_sum(tf.subtract(x, x_sample), 0, True))
-bh_adder = tf.multiply(lr / size_bt, tf.reduce_sum(tf.subtract(h, h_sample), 0, True))
+                      tf.subtract(tf.matmul(tf.transpose(a=x), h), tf.matmul(tf.transpose(a=x_sample), h_sample)))
+bv_adder = tf.multiply(lr / size_bt, tf.reduce_sum(input_tensor=tf.subtract(x, x_sample), axis=0, keepdims=True))
+bh_adder = tf.multiply(lr / size_bt, tf.reduce_sum(input_tensor=tf.subtract(h, h_sample), axis=0, keepdims=True))
 # When we do sess.run(updt), TensorFlow will run all 3 update steps
 updt = [W.assign_add(W_adder), bv.assign_add(bv_adder), bh.assign_add(bh_adder)]
 
 # Run the graph!
 # Now it's time to start a session and run the graph! 
 
-with tf.Session() as sess:
+with tf.compat.v1.Session() as sess:
     # First, we train the model
     # initialize the variables of the model
-    init = tf.global_variables_initializer()
+    init = tf.compat.v1.global_variables_initializer()
     sess.run(init)
     # Run through all of the training data num_epochs times
     for epoch in tqdm(range(num_epochs)):
